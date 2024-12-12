@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
 
-// 创建 MySQL 连接池
+// MySQL
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
@@ -10,11 +10,11 @@ const pool = mysql.createPool({
   database: 'acne'
 });
 
-// 定义您的路由
+// 定義 router 處理程序
 router.get('/video/:topic', (req, res) => {
   const { topic } = req.params;
 
-  // 执行查询
+  // 查詢
   pool.query('SELECT link FROM videos WHERE topic = ?', [topic], (err, results) => {
     if (err) {
       console.error('Error querying database:', err);
@@ -22,7 +22,7 @@ router.get('/video/:topic', (req, res) => {
       return;
     }
 
-    // 处理查询结果
+    // 取得結果
     if (results.length === 0) {
       res.status(404).json({ error: 'Video not found' });
       return;
@@ -33,6 +33,6 @@ router.get('/video/:topic', (req, res) => {
   });
 });
 
-// 导出路由模块
+// 導出模組
 module.exports = router;
 

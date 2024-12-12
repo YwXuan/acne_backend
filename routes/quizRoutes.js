@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
 
-// 创建MySQL连接池
+//  MySQL 
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
@@ -11,11 +11,11 @@ const pool = mysql.createPool({
     charset: 'utf8mb4' // 设置字符编码为UTF-8
 });
 
-// 定义路由处理程序
+// 定義 router 處理程序
 router.get('/quiz/:topic', async (req, res) => {
   const { topic } = req.params;
   try {
-    // 从连接池中获取连接
+    // 從 MySQL 取得連接
     pool.getConnection((err, connection) => {
       if (err) {
         console.error('Error getting MySQL connection:', err);
@@ -23,9 +23,9 @@ router.get('/quiz/:topic', async (req, res) => {
         return;
       }
       
-      // 执行查询
+      // 查詢結果
       connection.query('SELECT id, topic, que, A, B, C, D, ans FROM quizs WHERE topic = ? ', [topic], (err, rows) => {
-        // 释放连接
+        // 釋放連接
         connection.release();
 
         if (err) {
@@ -40,7 +40,7 @@ router.get('/quiz/:topic', async (req, res) => {
           return;
         }
 
-        // 返回查询结果
+        // 返回查詢结果
         res.json(rows);
       });
     });
@@ -50,5 +50,5 @@ router.get('/quiz/:topic', async (req, res) => {
   }
 });
 
-// 导出路由模块
+// 倒出模組
 module.exports = router;
