@@ -14,10 +14,16 @@ const pool = mysql.createPool({
 // POST 路由處理反饋資料
 router.post('/feedback', async (req, res) => {
   const {
-    courseEvaluation, learningTransfer, name, postTestScore, preTestScore, selfEvaluation
+    courseEvaluation, gender, hasSkinCondition, learningTransfer, name, postTestScore, preTestScore, selfEvaluation,
+    severitySkinCondition, treatmentQuestion10
   } = req.body;
 
   console.log("Received data:", req.body);
+  // console.log('name:', name, typeof name);
+  // console.log('hasSkinCondition:', hasSkinCondition, typeof hasSkinCondition);
+  // console.log('treatmentQuestion10:', treatmentQuestion10, typeof treatmentQuestion10);
+  // console.log('severitySkinCondition:', severitySkinCondition, typeof severitySkinCondition);
+
 
   // 驗證輸入
   const isValidArray = (arr) => Array.isArray(arr) && arr.length > 0;
@@ -28,23 +34,39 @@ router.post('/feedback', async (req, res) => {
   }
 
   const sql = `
-    INSERT INTO feedback (name, pre_score, post_score, question1, question2, question3, question4, question5, question6, question7, question8)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-  
-  const values = [
-    name,
-    preTestScore,
-    postTestScore,
-    courseEvaluation[0] || null,
-    courseEvaluation[1] || null,
-    courseEvaluation[2] || null,
-    selfEvaluation[0] || null,
-    selfEvaluation[1] || null,
-    selfEvaluation[2] || null,
-    learningTransfer[0] || null,
-    learningTransfer[1] || null,
-  ];
+  INSERT INTO feedback (
+    name, pre_score, post_score, 
+    question1, question2, question3, 
+    question4, question5, question6, 
+    question7, question8,
+    gender, question9, question10, question11
+  ) 
+  VALUES (?, ?, ?,
+           ?, ?, ?, 
+           ?, ?, ?, 
+           ?, ?, 
+           ?, ?, ?, ?)
+`;
+
+const values = [
+  name,
+  preTestScore,
+  postTestScore,
+  courseEvaluation[0] || null,
+  courseEvaluation[1] || null,
+  courseEvaluation[2] || null,
+  selfEvaluation[0] || null,
+  selfEvaluation[1] || null,
+  selfEvaluation[2] || null,
+  learningTransfer[0] || null,
+  learningTransfer[1] || null,
+  gender, // gender (directly passed)
+  hasSkinCondition ? 'true' : 'false', // question9 (hasSkinCondition as true/false string)
+  severitySkinCondition || null, // question10 (severitySkinCondition, can be null)
+  treatmentQuestion10 ? 'true' : 'false' // question11 (treatmentQuestion10 as true/false string)
+];
+
+
 
   let connection;
 
